@@ -3,7 +3,7 @@ import { impactCalculator } from "../utils/helperFunctions";
 import { ImpactCardProps } from "../interfaces";
 import styled from "styled-components";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
@@ -18,11 +18,40 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     equivalentUnit,
     color,
     impactUnit,
+    chartGroup,
   } = impactData;
 
-  const countStepNumber = useMotionValue(0);
-  const normalizedImpactAnimated = useTransform(countStepNumber, Math.round);
+  const accumulatedStepNumber = useMotionValue(0);
+  const accumulatedImpactAnimated = useTransform(
+    accumulatedStepNumber,
+    (number) => {
+      return (Math.round(number * 100) / 100).toFixed(1);
+    }
+  );
 
+  useEffect(() => {
+    if (normalizedEquivalent !== undefined) {
+      const animation = animate(
+        accumulatedStepNumber,
+        impactCalculator(normalizedEquivalent, investAmount),
+        {
+          duration: 1.5,
+        }
+      );
+      return animation.stop;
+    }
+  }, [investAmount]);
+
+  const countStepNumber = useMotionValue(0);
+  const normalizedImpactAnimated = useTransform(countStepNumber, (number) => {
+    if (chartGroup === "a") {
+      return (Math.round(number).toFixed(1));
+    }
+    if (number < 0) {
+      return (-Math.round(number * 100) / 100).toFixed(1);
+    }
+    return (Math.round(number * 100) / 100).toFixed(1);
+  });
   useEffect(() => {
     const animation = animate(
       countStepNumber,
@@ -32,94 +61,70 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     return animation.stop;
   }, [investAmount]);
 
-  const accumulatedStepNumber = useMotionValue(0);
-  const accumulatedImpactAnimated = useTransform(
-    accumulatedStepNumber,
-    Math.round
-  );
-
-  useEffect(() => {
-    if (normalizedEquivalent !== undefined) {
-      const animation = animate(
-        accumulatedStepNumber,
-        impactCalculator(normalizedEquivalent, investAmount),
-        { duration: 1.5 }
-      );
-      return animation.stop;
-    }
-  }, [investAmount]);
-
   return (
-    <motion.div
-      animate={{
-        rotateY: 180,
-      }}
-      transition={{
-        duration: 0.75,
-      }}
-    >
-      <ImpactCardWrapper>
-        <div className="normalizedImpactContainer">
-          <Image src={`/icons/${icons[0]}`} alt="" width="70" height="90" />
-          <div className="normalizedImpactLabelsContainer">
-            <h3
-              style={{ color: `var(--custom-${color})` }}
-              className="normalizedImpactLabel"
-            >
-              {title}
-            </h3>
-            <div className="normalizedImpactAmount">
-              <motion.p>{normalizedImpactAnimated}</motion.p>
-              &nbsp;{`${impactUnit}`}
-            </div>
+    <ImpactCardWrapper>
+      <div className="normalizedImpactContainer">
+        <Image src={`/icons/${icons[0]}`} alt="" width="70" height="90" />
+        <div className="normalizedImpactLabelsContainer">
+          <h3
+            style={{ color: `var(--custom-${color})` }}
+            className="normalizedImpactLabel"
+          >
+            {title}
+          </h3>
+          <div className="normalizedImpactAmount">
+            <motion.p>{normalizedImpactAnimated}</motion.p>
+            &nbsp;{`${impactUnit}`}
           </div>
         </div>
+      </div>
 
-        <p className="equivalentDescription">{equivalentDesc}</p>
-        <div className="normalizedEquivalentDataContainer">
-          <div className="normalizedEquivalentIcon">
-            <Image
-              src={`/icons/${equivalentIcon}`}
-              alt=""
-              width="30"
-              height="20"
-            />
-          </div>
-          <div className="normalizedEquivalentLabel">
-            {normalizedEquivalent ? (
-              <>
-                {" "}
-                <motion.p style={{ color: `var(--custom-${color})` }}>
-                  {accumulatedImpactAnimated}
-                </motion.p>
-                {equivalentUnit && equivalentUnit}
-              </>
-            ) : (
-              <>
-                {" "}
-                <p style={{ color: `var(--custom-${color})` }}>
-                  {fixedEquivalent}
-                  {equivalentUnit && equivalentUnit}
-                </p>
-              </>
-            )}
-          </div>
+      <p className="equivalentDescription">{equivalentDesc}</p>
+      <div className="normalizedEquivalentDataContainer">
+        <div className="normalizedEquivalentIcon">
+          <Image
+            src={`/icons/${equivalentIcon}`}
+            alt=""
+            width="30"
+            height="20"
+          />
         </div>
-      </ImpactCardWrapper>
-    </motion.div>
+        <div className="normalizedEquivalentLabel">
+          {normalizedEquivalent ? (
+            <>
+              {" "}
+              <motion.p style={{ color: `var(--custom-${color})` }}>
+                {accumulatedImpactAnimated}
+              </motion.p>
+              {equivalentUnit && equivalentUnit}
+            </>
+          ) : (
+            <>
+              {" "}
+              <p style={{ color: `var(--custom-${color})` }}>
+                {fixedEquivalent}
+                {equivalentUnit && equivalentUnit}
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </ImpactCardWrapper>
   );
 };
 
 const ImpactCardWrapper = styled.section`
   display: flex;
   flex-direction: column;
-  width: 230px;
-  height: 280px;
+  width: 100%;
+  height: 100%;
   background-color: white;
   align-items: center;
   border: 1px solid var(--grey);
   justify-content: flex-end;
-  transform: scaleX(-1);
+  position: absolute;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
   .normalizedImpactContainer {
     display: flex;
     flex-direction: column;

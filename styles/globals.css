@@ -142,6 +142,8 @@ table {
 body {
   margin: 0;
   font-family: var(--font-questrial);
+  overflow-x: hidden;
+  /* -webkit-overflowX-scrolling: none; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

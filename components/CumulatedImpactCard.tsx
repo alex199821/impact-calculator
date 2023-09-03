@@ -132,17 +132,19 @@ const CumulatedImpactCard = ({
       datalabels: {
         display: false,
       },
+
       tooltip: {
         enabled: true,
         backgroundColor: "#d8d8d8",
         displayColors: false,
         padding: 10,
+        cornerRadius: 0,
         yAlign: "bottom" as const,
         callbacks: {
           label: (context) => {
             let label = "";
             if (context.parsed.y) {
-              label = context.parsed.y.toFixed(1) + " " + impactUnit;
+              label = context.parsed.y.toFixed(1) + "\n" + impactUnit;
             }
             return label;
           },
@@ -193,45 +195,38 @@ const CumulatedImpactCard = ({
   };
 
   return (
-    <motion.div
-    animate={{
-      rotateY: 180,
-    }}
-    transition={{
-      duration: 3 / 4,
-    }}
-    >
-      <CumulatedImpactCardWrapper>
-        <div className="cumulatedImpactIconContainer">
-          <Image src={`/icons/${icons[0]}`} alt="" width="35" height="45" />
-        </div>
+    <CumulatedImpactCardWrapper>
+      <div className="cumulatedImpactIconContainer">
+        <Image src={`/icons/${icons[0]}`} alt="" width="35" height="45" />
+      </div>
 
-        <div className="barChartContainer">
-          {chartColor && <Bar options={options} data={data} />}
-          {showFullYear && <p className="fullYearLabel">Full Year</p>}
-        </div>
-        <p
-          className="barChartTitle"
-          style={{ color: chartColor ? chartColor : "transparent" }}
-        >
-          {title}
-        </p>
-      </CumulatedImpactCardWrapper>
-    </motion.div>
+      <div className="barChartContainer">
+        {chartColor && <Bar options={options} data={data} />}
+        {showFullYear && <p className="fullYearLabel">Full Year</p>}
+      </div>
+      <p
+        className="barChartTitle"
+        style={{ color: chartColor ? chartColor : "transparent" }}
+      >
+        {title}
+      </p>
+    </CumulatedImpactCardWrapper>
   );
 };
 
 const CumulatedImpactCardWrapper = styled.section`
   display: flex;
   flex-direction: column;
-  width: 230px;
-  height: 280px;
-  background-color: white;
+  width: 100%;
+  height: 100%;
   align-items: center;
   border: 1px solid var(--grey);
   justify-content: flex-end;
-  position: relative;
-  transform: scaleX(-1);
+  position: absolute;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  background-color: var(--white);
   .cumulatedImpactIconContainer {
     display: flex;
     justify-content: flex-end;

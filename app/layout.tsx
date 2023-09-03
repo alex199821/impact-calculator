@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps) {
         <main>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </main>
-        <footer style={{ display: 'flex', width: "800px", margin: "auto", columnGap: '30px', marginTop: '30px', marginBottom: '30px'}}>
+        {/* <footer style={{ display: 'flex', width: "100%", margin: "auto", columnGap: '30px', marginTop: '30px', marginBottom: '30px', paddingLeft: '35px'}}>
           <Image
             src={"/icons/globalGoals.svg"}
             alt=""
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps) {
             height="0"
             style={{ width: "auto", height: "40px" }}
           />
-        </footer>
+        </footer> */}
       </body>
     </html>
   );

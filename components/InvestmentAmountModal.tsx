@@ -2,37 +2,65 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { InvestmentModalProps } from "../interfaces";
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
 const InvestmentAmountModal = ({
   investAmount,
   updateInvestAmount,
   handleInvestmentModal,
+  investmentModalOpen,
 }: InvestmentModalProps) => {
-  const [inputValue, setInputValue] = useState(investAmount);
+  const [inputValue, setInputValue] = useState(
+    investAmount.toLocaleString("en-US")
+  );
   const [warningMessage, setWarningMessage] = useState(false);
+  const [modalStartsOpening, setModalStartsOpening] = useState(true);
+  const [modalStartsClosing, setModalStartsClosing] = useState(false);
+
+  useEffect(() => {
+    let formattedInvestAmont = investAmount.toLocaleString("en-US");
+    setInputValue(formattedInvestAmont);
+  }, [investAmount]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = event.target.value;
-    setInputValue(parseInt(newValue));
+    const commasRemovedFromNewValue = newValue.replace(/,/g, "");
+    const newValueParsed = parseInt(commasRemovedFromNewValue.replace("$", ""));
+
+    if (isNaN(newValueParsed)) {
+      setInputValue("");
+      return;
+    }
+    setInputValue(newValueParsed.toLocaleString("en-US"));
   };
 
   const recalculateImpact = () => {
-    if (inputValue < 1 || inputValue > 1000000) {
+    let parsedInputValue = parseInt(inputValue.replace(/,/g, ""));
+    if (
+      (parsedInputValue && parsedInputValue < 1) ||
+      (parsedInputValue && parsedInputValue > 1000000) ||
+      !parsedInputValue
+    ) {
       setWarningMessage(true);
       return;
     }
-    updateInvestAmount && updateInvestAmount(inputValue);
+    updateInvestAmount && updateInvestAmount(parsedInputValue);
     closePopup();
     document.body.style.overflow = "visible";
   };
 
   const closePopup = () => {
-    handleInvestmentModal(false);
+    setModalStartsClosing(true);
+    setTimeout(() => {
+      handleInvestmentModal(false);
+    }, 500);
     document.body.style.overflow = "visible";
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setModalStartsOpening(false);
+    }, 400);
+  }, []);
 
   useEffect(() => {
     if (warningMessage) {
@@ -41,12 +69,6 @@ const InvestmentAmountModal = ({
       }, 1500);
     }
   }, [warningMessage]);
-
-  useEffect(() => {
-    setInputValue(investAmount);
-  }, [investAmount]);
-
-
 
   return (
     <>
@@ -76,18 +98,18 @@ const InvestmentAmountModal = ({
             initial={{
               y: 70,
             }}
-            animate={{
-              y: [90, 0],
-            }}
+            animate={
+              modalStartsClosing
+                ? { y: [0, 90], opacity: [1, 0] }
+                : {
+                    y: [90, 0],
+                  }
+            }
             transition={{
-              duration: 0.5,
+              duration: 0.2,
               type: "spring",
               stiffness: 30,
-              delay: 0.5,
-              times: [0, 0.5],
-            }}
-            exit={{
-              y: [0, 70],
+              delay: modalStartsClosing ? 0 : 0.8,
             }}
           >
             <h4 className="investAmountInputLabel">
@@ -119,42 +141,80 @@ const InvestmentAmountModal = ({
             </AnimatePresence>
           </div>
           <div className="investAmountInputContainer">
+            {modalStartsOpening && (
+              <motion.div
+                initial={{
+                  top: 0,
+                }}
+                animate={
+                  window.innerWidth > 600
+                    ? {
+                        height: [0, 90],
+                      }
+                    : { height: [0, 70] }
+                }
+                transition={{
+                  ease: "easeInOut",
+                  stiffness: 30,
+                  duration: 0.4,
+                }}
+                className="orangeCoverOverInput"
+              />
+            )}
+            {!modalStartsOpening && (
+              <motion.div
+                initial={{
+                  bottom: 0,
+                }}
+                animate={
+                  window.innerWidth > 600
+                    ? {
+                        height: [90, 0],
+                      }
+                    : { height: [70, 0] }
+                }
+                transition={{
+                  ease: "easeInOut",
+                  stiffness: 30,
+                  delay: 0.4,
+                  duration: 0.4,
+                }}
+                className="orangeCoverOverInput"
+              />
+            )}
             <motion.div
-              initial={{
-                height: 0,
-              }}
-              animate={{
-                height: [100, 0],
-              }}
               transition={{
-                duration: 0.5,
+                duration: 0.2,
                 ease: "easeInOut",
                 stiffness: 30,
-                times: [0.16, 0, 0.32],
               }}
-              className="orangeCoverOverInput"
-            ></motion.div>
-            <input
-              type="number"
-              value={inputValue}
-              onChange={handleChange}
-              className="investAmountInput"
-            />
+              animate={
+                warningMessage ? { x: [0, 10, -10, 10, -10, 10, -10, 0] } : {}
+              }
+            >
+              <input
+                type="string"
+                value={`$${inputValue}`}
+                onChange={handleChange}
+                className="investAmountInput"
+              />
+            </motion.div>
           </div>
           <p className="pressEscLabel">Hit the enter key or ESC to close</p>
           <motion.div
-            animate={{
-              y: [-160, 0],
-            }}
+            animate={
+              modalStartsClosing
+                ? { y: [0, -80], opacity: [1, 0] }
+                : {
+                    y: [-80, 0],
+                    opacity: [0, 1],
+                  }
+            }
             transition={{
               duration: 0.2,
               type: "spring",
               stiffness: 30,
-              delay: 0.5,
-              times: [0, 0.2],
-            }}
-            exit={{
-              y: [0, -100],
+              delay: modalStartsClosing ? 0 : 0.8,
             }}
           >
             <button
@@ -173,15 +233,16 @@ const InvestmentAmountModal = ({
 const InvestmentAmountModalWrapper = styled.section`
   position: fixed;
   top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  /* overflow-x: hidden; */
   background-color: var(--lightGrey);
-  z-index: 9;
+  z-index: 14;
+
   .closePopupButton {
     display: flex;
     position: absolute;
@@ -216,7 +277,6 @@ const InvestmentAmountModalWrapper = styled.section`
     .orangeCoverOverInput {
       display: flex;
       position: absolute;
-      bottom: 0;
       background-color: var(--custom-red);
       width: 100%;
       z-index: 9999;
@@ -243,7 +303,6 @@ const InvestmentAmountModalWrapper = styled.section`
     justify-content: flex-end;
     font-size: 12px;
     margin-top: 10px;
-    margin-bottom: 80px;
     right: 0;
   }
   input::-webkit-outer-spin-button,
@@ -258,11 +317,44 @@ const InvestmentAmountModalWrapper = styled.section`
     display: flex;
     position: relative;
     color: white;
+    margin-top: 60px;
     background-color: var(--custom-red);
     font-size: 14px;
     border: none;
     padding: 15px 20px;
     cursor: pointer;
+  }
+  @media (max-width: 600px) {
+    .closePopupButton {
+    }
+    .investAmountInputLabel {
+    }
+    .warningMessageContainer {
+      .warningMessage {
+      }
+    }
+
+    .investAmountInputContainer {
+      display: flex;
+      justify-content: center;
+
+      .orangeCoverOverInput {
+      }
+      .investAmountInput {
+        width: 290px;
+        font-size: 54px;
+      }
+    }
+    .pressEscLabel {
+      display: none;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    }
+    .investAmountInput:focus {
+    }
+    .setNewInvestAmountButton {
+    }
   }
 `;
 

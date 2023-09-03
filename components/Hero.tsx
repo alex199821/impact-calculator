@@ -2,13 +2,20 @@
 import styled from "styled-components";
 import Image from "next/image";
 import ImpactTypeSwitcher from "./ImpactTypeSwitcher";
-import { CumulatedImpactUpdate } from "../interfaces";
+import { CumulatedImpactUpdate, HeroProps } from "../interfaces";
+import { useEffect, useRef, useState } from "react";
 const Hero = ({
   cumulatedImpactSelected,
   updateCumulatedImpact,
-}: CumulatedImpactUpdate) => {
+  typeSwithcerIsOnTop,
+  handleHeroState,
+}: HeroProps) => {
   return (
-    <HeroWrapper>
+    <HeroWrapper
+      style={
+        typeSwithcerIsOnTop ? { position: "relative" } : { position: "sticky" }
+      }
+    >
       <div className="descriptionContainer">
         <h1 className="mainHeaderText">FF Sustainable Water & Waste Fund</h1>
         <h2 className="projectDescription">
@@ -24,8 +31,12 @@ const Hero = ({
         width="0"
         height="0"
         sizes="100vw"
+        priority
       />
-      <ImpactTypeSwitcher cumulatedImpactSelected={cumulatedImpactSelected} updateCumulatedImpact={updateCumulatedImpact} />
+      {/* <ImpactTypeSwitcher
+        cumulatedImpactSelected={cumulatedImpactSelected}
+        updateCumulatedImpact={updateCumulatedImpact}
+      /> */}
     </HeroWrapper>
   );
 };
@@ -36,6 +47,7 @@ const HeroWrapper = styled.section`
   width: 800px;
   height: 300px;
   position: relative;
+  z-index: 10;
   .gradient {
     float: left;
     position: absolute;
@@ -56,10 +68,10 @@ const HeroWrapper = styled.section`
   .descriptionContainer {
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 450px;
     justify-content: center;
     row-gap: 20px;
-    padding-left: 40px;
+    padding: 40px;
     position: relative;
     z-index: 5;
     .mainHeaderText {
@@ -81,6 +93,16 @@ const HeroWrapper = styled.section`
     height: 100%;
     object-fit: cover;
     aspect-ratio: 18/12;
+  }
+  @media (max-width: 800px) {
+    width: 100%;
+  }
+  @media (max-width: 600px) {
+    .descriptionContainer {
+      .mainHeaderText {
+        font-size: 32px;
+      }
+    }
   }
 `;
 

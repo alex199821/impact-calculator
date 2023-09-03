@@ -27,7 +27,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/CumulatedImpactCard.jsx", "components/Hero.js", "components/InvestmentAmountModal.js"  ],
+, "components/CumulatedImpactCard.jsx", "components/Hero.js", "components/InvestmentAmountModal.js", "hooks/isInViewportHook.js", "components/ImpactCard.js", "components/ImpactCard.js"  ],
   "exclude": [
     "node_modules"
   ]

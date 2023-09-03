@@ -16,6 +16,11 @@ export interface Impact {
   };
 }
 
+export interface HeroStateUpdate {
+  typeSwithcerIsOnTop: boolean;
+  handleHeroState?: (value: boolean) => void;
+}
+
 export interface CumulatedImpactUpdate {
   cumulatedImpactSelected: boolean;
   updateCumulatedImpact?: (value: boolean) => void;
@@ -32,11 +37,29 @@ export interface ModalStateManagement {
 }
 
 export interface DateManagement {
-  calculationStartDate: Date, 
-  setNewDate?: (prop: Date) => void,
+  calculationStartDate: Date;
+  setNewDate?: (prop: Date) => void;
 }
 
-export interface ImpactCardListProps extends CumulatedImpactUpdate, InvestAmount, DateManagement{}
-export interface ImpactCardProps extends Impact, InvestAmount, DateManagement{}
-export interface InvestmentModalProps extends InvestAmount, ModalStateManagement {}
-export interface DataInputProps extends InvestAmount, CumulatedImpactUpdate, DateManagement {}
+export interface DatePickerModalProps {
+  handleDateSelect: (prop: Date | undefined) => void;
+  defaultMonth: Date;
+  selected: Date;
+  closeDatePickerModal: () => void;
+}
+
+export interface ImpactCardListProps
+  extends CumulatedImpactUpdate,
+    InvestAmount,
+    DateManagement {}
+export interface ImpactCardProps extends Impact, InvestAmount, DateManagement {}
+export interface InvestmentModalProps
+  extends InvestAmount,
+    ModalStateManagement {}
+export interface DataInputProps
+  extends InvestAmount,
+    CumulatedImpactUpdate,
+    DateManagement,
+    HeroStateUpdate {}
+export interface HeroProps extends CumulatedImpactUpdate, HeroStateUpdate {}
+// export interface DatePickerModalProps extends {};

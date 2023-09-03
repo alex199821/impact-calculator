@@ -1,30 +1,72 @@
 "use client";
 import styled from "styled-components";
 import Image from "next/image";
-const Header = () => {
+import { HeroStateUpdate } from "../interfaces";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+const Header = ({ typeSwithcerIsOnTop }: HeroStateUpdate) => {
   return (
     <HeaderWrapper>
-      <Image
-        src={"/icons/logo.svg"}
-        alt=""
-        width={150}
-        height={70}
-        className="projectLogo"
-      />
+      <motion.div
+        initial={{
+          height: 50,
+        }}
+        animate={typeSwithcerIsOnTop ? { height: 30 } : { height: 50 }}
+        transition={{
+          duration: 0.1,
+          type: "Tween",
+          stiffness: 50,
+        }}
+        className="logoContainer"
+      >
+        <Image
+          src={"/icons/logo.svg"}
+          alt=""
+          width="0"
+          height="0"
+          sizes="100vw"
+          className={`projectLogo ${
+            typeSwithcerIsOnTop && "projectLogoVisibility"
+          }`}
+        />
+      </motion.div>
     </HeaderWrapper>
   );
 };
 
 const HeaderWrapper = styled.section`
+  display: flex;
   width: 800px;
+  align-items: center;
   margin: auto;
-  position: -webkit-sticky;
-  position: sticky;
-  z-index: 99997;
-  top: 0;
+  height: 100px;
   background-color: var(--white);
-  .projectLogo {
-    margin-left: 40px;
+  .logoContainer {
+    display: flex;
+    background-color: var(--white);
+    .projectLogoVisibility {
+      visibility: visible;
+    }
+    .headerHeightDecreased {
+      height: 50px;
+    }
+    .projectLogo {
+      width: auto;
+      height: auto;
+      margin-left: 40px;
+    }
+  }
+  @media (max-width: 800px) {
+    width: 100%;
+  }
+  @media (max-width: 600px) {
+    .logoContainer {
+      display: flex;
+      background-color: var(--white);
+      .projectLogoVisibility {
+        visibility: hidden;
+      }
+    }
   }
 `;
 
