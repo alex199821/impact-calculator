@@ -1,13 +1,14 @@
 "use client";
-import { impactCalculator } from "../utils/helperFunctions";
-import { ImpactCardProps } from "../interfaces";
-import { getNumberBasedOnRange } from "../utils/helperFunctions";
 import { useEffect, useState } from "react";
-import "chartjs-plugin-datalabels";
 import styled from "styled-components";
+import "chartjs-plugin-datalabels";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { calculateYearsPassed } from "../utils/helperFunctions";
+import { ImpactCardProps } from "../interfaces";
+import {
+  calculateYearsPassed,
+  impactCalculator,
+} from "../utils/helperFunctions";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +28,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 const CumulatedImpactCard = ({
@@ -58,62 +60,64 @@ const CumulatedImpactCard = ({
   let options: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
     responsive: true,
+    layout: {
+      padding: {
+        top: 35,
+      },
+    },
     elements: {
       bar: {
-        borderSkipped: false,
         borderWidth: 1.2,
       },
     },
+    animations: {
+      tension: {
+        duration: 1000,
+        easing: 'linear',
+        from: 1,
+        to: 0,
+        loop: true
+      }
+    },
     scales: {
       x: {
-        grid: {
+        border: {
           display: false,
         },
-        border: {
+        grid: {
           display: false,
         },
       },
       y: {
-        min:
+        beginAtZero: true,
+        grace: "10%",
+        suggestedMin:
           chartGroup === "b"
-            ? calculateYearsPassed(calculationStartDate) > 1
-              ? -getNumberBasedOnRange(
-                  impactCalculator(normalizedImpact, investAmount)
-                ) *
-                8 *
-                Math.ceil(calculateYearsPassed(calculationStartDate))
-              : -getNumberBasedOnRange(
-                  impactCalculator(normalizedImpact, investAmount)
-                ) * 8
+            ? 0 - (Math.abs(normalizedImpact) * investAmount) / 500000
             : 0,
-        max:
-          calculateYearsPassed(calculationStartDate) > 1
-            ? getNumberBasedOnRange(
-                impactCalculator(normalizedImpact, investAmount)
-              ) *
-              10 *
-              Math.ceil(calculateYearsPassed(calculationStartDate))
-            : getNumberBasedOnRange(
-                impactCalculator(normalizedImpact, investAmount)
-              ) * 10,
+        suggestedMax:
+          chartGroup === "b"
+            ? (Math.abs(normalizedImpact) * investAmount) / 500000
+            : 0,
         grid: {
           display: true,
-          drawTicks: false,
-          lineWidth: (context) => (context.tick.value == 0 ? 1 : 0),
+          color: (context) => {
+            if (context.tick.value === 0) {
+              return "rgba(102,102,102,0.2)";
+            } else {
+              return "transparent";
+            }
+          },
         },
         border: {
           display: false,
         },
-        afterTickToLabelConversion: (ctx) => {
-          ctx.ticks.push({ value: 0, label: "0" });
-        },
         ticks: {
           display: true,
-          stepSize: getNumberBasedOnRange(
-            impactCalculator(normalizedImpact, investAmount)
-          ),
           callback: function (value: string | number): string {
-            return (value + " " + impactUnit).toString();
+            return chartGroup === "a"
+              ? Number(value).toFixed(0) + " " + impactUnit
+              : Number(value).toFixed(2) + " " + impactUnit;
           },
         },
       },
@@ -122,36 +126,71 @@ const CumulatedImpactCard = ({
       legend: {
         display: false,
       },
-      colors: {
-        enabled: false,
-        forceOverride: true,
-      },
-      title: {
-        display: false,
-      },
       datalabels: {
-        display: false,
-      },
-
-      tooltip: {
-        enabled: true,
-        backgroundColor: "#d8d8d8",
-        displayColors: false,
-        padding: 10,
-        cornerRadius: 0,
-        yAlign: "bottom" as const,
-        callbacks: {
-          label: (context) => {
-            let label = "";
-            if (context.parsed.y) {
-              label = context.parsed.y.toFixed(1) + "\n" + impactUnit;
-            }
-            return label;
+        labels: {
+          title: {
+            display: true,
+            borderRadius: 0,
+            color: "black",
+            backgroundColor: "#d8d8d8",
+            align: "end",
+            anchor: "end",
+            offset: 5,
+            rotation: 45,
+            padding: function (context) {
+              return {
+                top: 5,
+                bottom: 5,
+                left: 12,
+                right: 12,
+              };
+            },
+            formatter: function (value, context) {
+              if (context.chart.data && context.dataset.data[0] == 0) {
+                return null;
+              } else if (context.dataset.data[0]) {
+                return "";
+              }
+            },
           },
-          labelTextColor: () => {
-            return "#000000";
+          value: {
+            display: true,
+            borderRadius: 0,
+            color: "black",
+            backgroundColor: "#d8d8d8",
+            align: "end",
+            anchor: "end",
+            offset: 10,
+            padding: function (context) {
+              return {
+                top: 5,
+                bottom: 5,
+                left: 18,
+                right: 18,
+              };
+            },
+            textAlign: "center",
+            font: { size: 10, weight: "bold" },
+            formatter: function (value, context) {
+              if (context.chart.data && context.dataset.data[0] == 0) {
+                return null;
+              } else if (context.dataset.data[0]) {
+                return chartGroup == "a"
+                  ? [
+                      `${Number(context.dataset.data[0]).toFixed(0)}`,
+                      `${impactUnit}`,
+                    ]
+                  : [
+                      `${Number(context.dataset.data[0]).toFixed(1)}`,
+                      `${impactUnit}`,
+                    ];
+              }
+            },
           },
         },
+      },
+      tooltip: {
+        enabled: false,
       },
     },
   };
@@ -181,6 +220,7 @@ const CumulatedImpactCard = ({
             : 0,
         ],
         backgroundColor: "white",
+        hoverBackgroundColor: "white",
         borderColor:
           typeof chartColor === "string" ? chartColor : "transparent",
         barPercentage: 0.7,

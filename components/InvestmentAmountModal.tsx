@@ -1,13 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { InvestmentModalProps } from "../interfaces";
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
+import { motion, AnimatePresence,  } from "framer-motion";
 const InvestmentAmountModal = ({
   investAmount,
   updateInvestAmount,
   handleInvestmentModal,
-  investmentModalOpen,
 }: InvestmentModalProps) => {
   const [inputValue, setInputValue] = useState(
     investAmount.toLocaleString("en-US")
@@ -34,15 +33,18 @@ const InvestmentAmountModal = ({
   };
 
   const recalculateImpact = () => {
-    let parsedInputValue = parseInt(inputValue.replace(/,/g, ""));
+    const inputValueWithoutCommas = inputValue.replace(/,/g, "");
+    const parsedInputValue = parseInt(inputValueWithoutCommas.replace("$", ""));
+
     if (
-      (parsedInputValue && parsedInputValue < 1) ||
-      (parsedInputValue && parsedInputValue > 1000000) ||
-      !parsedInputValue
+      isNaN(parsedInputValue) ||
+      parsedInputValue < 1 ||
+      parsedInputValue > 1000000
     ) {
       setWarningMessage(true);
       return;
     }
+
     updateInvestAmount && updateInvestAmount(parsedInputValue);
     closePopup();
     document.body.style.overflow = "visible";
@@ -70,6 +72,29 @@ const InvestmentAmountModal = ({
     }
   }, [warningMessage]);
 
+  const keyDownHandler = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closePopup();
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      recalculateImpact();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyDownHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [inputValue]);
+
+  useEffect(() => {
+    console.log(inputValue);
+  }, [inputValue]);
   return (
     <>
       <motion.div

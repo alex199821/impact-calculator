@@ -4,15 +4,9 @@ import ImpactCard from "./ImpactCard";
 import styled from "styled-components";
 import { ImpactCardListProps } from "../interfaces";
 import CumulatedImpactCard from "./CumulatedImpactCard";
-import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { impactCalculator } from "../utils/helperFunctions";
-import Image from "next/image";
-import { getNumberBasedOnRange } from "../utils/helperFunctions";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import "chartjs-plugin-datalabels";
-import { calculateYearsPassed } from "../utils/helperFunctions";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,10 +15,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  ChartData,
-  ChartOptions,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,

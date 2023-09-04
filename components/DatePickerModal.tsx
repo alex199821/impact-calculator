@@ -1,8 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { InvestmentModalProps } from "../interfaces";
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
+import { motion } from "framer-motion";
 import { DatePickerModalProps } from "../interfaces";
 import { DayPicker } from "react-day-picker";
 

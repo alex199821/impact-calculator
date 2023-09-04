@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Image from "next/image";
 import { HeroStateUpdate } from "../interfaces";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 const Header = ({ typeSwithcerIsOnTop }: HeroStateUpdate) => {
   return (
     <HeaderWrapper>

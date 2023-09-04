@@ -3,8 +3,13 @@ import { impactCalculator } from "../utils/helperFunctions";
 import { ImpactCardProps } from "../interfaces";
 import styled from "styled-components";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "framer-motion";
 
 const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
   const {
@@ -21,14 +26,16 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     chartGroup,
   } = impactData;
 
-  const accumulatedStepNumber = useMotionValue(0);
+  //Function to animate Accumulated Impact Counter
+  const accumulatedStepNumber = useMotionValue(
+    impactCalculator(normalizedEquivalent || 1, investAmount)
+  );
   const accumulatedImpactAnimated = useTransform(
     accumulatedStepNumber,
     (number) => {
       return (Math.round(number * 100) / 100).toFixed(1);
     }
   );
-
   useEffect(() => {
     if (normalizedEquivalent !== undefined) {
       const animation = animate(
@@ -42,10 +49,13 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     }
   }, [investAmount]);
 
-  const countStepNumber = useMotionValue(0);
+  //Function to animate Normalized Impact Counter
+  const countStepNumber = useMotionValue(
+    impactCalculator(normalizedImpact, investAmount)
+  );
   const normalizedImpactAnimated = useTransform(countStepNumber, (number) => {
     if (chartGroup === "a") {
-      return (Math.round(number).toFixed(1));
+      return Math.round(number).toFixed(1);
     }
     if (number < 0) {
       return (-Math.round(number * 100) / 100).toFixed(1);
@@ -123,7 +133,7 @@ const ImpactCardWrapper = styled.section`
   border: 1px solid var(--grey);
   justify-content: flex-end;
   position: absolute;
-  -webkit-backface-visibility: hidden; /* Safari */
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   .normalizedImpactContainer {
     display: flex;

@@ -34,8 +34,6 @@ export default function HomePage() {
     const headerRect = headerRef?.current?.getBoundingClientRect();
     const dataInputRect = dataInputRef?.current?.getBoundingClientRect();
     const dataInputRecttop = dataInputRect.top;
-    const headerRectHeight = headerRect.height;
-    const height = window.innerHeight;
 
     if (dataInputRecttop < 100) {
       setTypeSwithcerIsOnTop(true);

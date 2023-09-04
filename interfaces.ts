@@ -62,4 +62,3 @@ export interface DataInputProps
     DateManagement,
     HeroStateUpdate {}
 export interface HeroProps extends CumulatedImpactUpdate, HeroStateUpdate {}
-// export interface DatePickerModalProps extends {};

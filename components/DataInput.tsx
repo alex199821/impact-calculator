@@ -45,7 +45,7 @@ const DataInput = ({
     setDatePickerOpen(true);
   };
 
-  const countStepNumber = useMotionValue(100);
+  const countStepNumber = useMotionValue(investAmount);
   const normalizedImpactAnimated = useTransform(countStepNumber, (number) => {
     return Math.round(number).toLocaleString("en-US");
   });
@@ -132,14 +132,14 @@ const DataInput = ({
                   onClick={() => showDatePicker()}
                   className="datePickerOpener"
                   initial={{
-                    fontSize: "28px",
+                    fontSize: "26px",
                   }}
                   animate={
                     typeSwithcerIsOnTop
                       ? {
                           fontSize: "22px",
                         }
-                      : { fontSize: "28px" }
+                      : { fontSize: "26px" }
                   }
                   transition={{
                     duration: 0.1,
@@ -192,13 +192,13 @@ const DataInput = ({
                       ? {
                           fontSize: "22px",
                         }
-                      : { fontSize: "28px" }
+                      : { fontSize: "26px" }
                   }
                   transition={{
                     duration: 0.1,
                   }}
                 >
-                  <motion.p>{cumulatedPercentage}</motion.p>%{/* </div> */}
+                  <motion.p>{cumulatedPercentage}</motion.p>%
                 </motion.div>
               </div>
             </div>
@@ -308,6 +308,10 @@ const DataInputWrapper = styled.section`
       background-color: transparent;
       border: none;
       border-bottom: 2px solid var(--custom-red);
+      outline: none;
+    }
+    .investmentInputButton:focus {
+      outline: none;
     }
   }
   .cumulatedInputContainer {
@@ -348,7 +352,7 @@ const DataInputWrapper = styled.section`
           }
         }
         .datePickerOpener {
-          font-size: 26px;
+          font-size: 22px;
           border: none;
           width: 70%;
           margin: auto;
@@ -375,7 +379,7 @@ const DataInputWrapper = styled.section`
         .cumulatedPercentage {
           display: flex;
           flex-direction: row;
-          font-size: 26px;
+          font-size: 24px;
           color: var(--custom-darkblue);
         }
       }
@@ -423,143 +427,5 @@ const DataInputWrapper = styled.section`
     }
   }
 `;
-
-// const AmountInputWrapper = styled.section`
-//   .amountInputsConainer {
-//     display: flex;
-//     flex-direction: column;
-//     margin: auto;
-//     justify-content: center;
-//     align-items: center;
-//     background-color: blue;
-//     height: 120px;
-//     .investAmountLabel {
-//       font-size: 14px;
-//       margin-bottom: 15px;
-//     }
-//     .investmentInputButton {
-//       display: flex;
-//       width: 180px;
-//       text-align: center;
-//       justify-content: center;
-//       align-items: center;
-//       padding: 0;
-//       font-size: 28px;
-//       cursor: pointer;
-//       background-color: transparent;
-//       border: none;
-//       border-bottom: 2px solid var(--custom-red);
-//     }
-//   }
-// `;
-
-// const CumulatedInputWrapper = styled.section`
-//   /* .cumulatedInputContainer {
-//     display: flex;
-//     flex-direction: row;
-//     background-color: red;
-//     margin: auto;
-//     justify-content: center;
-//     align-items: center;
-//     .hideDiv {
-//       visibility: hidden;
-//       margin-top: -30px;
-//     }
-//     .investmentDateContainer {
-//       display: flex;
-//       width: 50%;
-//       align-items: center;
-//       justify-content: flex-end;
-//       padding-right: 25px;
-//       .investmentDateContainerInner {
-//         display: flex;
-//         flex-direction: column;
-//         width: fit-content;
-//         .datePickerLabel {
-//           margin-bottom: 18px;
-//           font-size: 14px;
-//         }
-//         .datePicker {
-//           z-index: 999;
-//           position: absolute;
-//           margin: auto;
-//           margin-left: -25px;
-//           margin-top: 5px;
-//         }
-//         .datePickerOpener {
-//           font-size: 26px;
-//           border: none;
-//           width: 70%;
-//           margin: auto;
-//           border-bottom: 2px solid var(--custom-red);
-//           background-color: transparent;
-//         }
-//       }
-//     }
-
-//     .cumulatedImpactLabelContainer {
-//       display: flex;
-//       width: 50%;
-//       align-items: center;
-//       justify-content: flex-start;
-//       padding-left: 25px;
-//       .cumulatedImpactLabelContainerInner {
-//         display: flex;
-//         flex-direction: column;
-//         align-items: center;
-//         width: fit-content;
-//         .cumulatedPercentageLabel {
-//           font-size: 14px;
-//           margin-bottom: 20px;
-//         }
-//         .cumulatedPercentage {
-//           display: flex;
-//           flex-direction: row;
-//           font-size: 26px;
-//           color: var(--custom-darkblue);
-//         }
-//       }
-//     }
-//   } */
-
-//   @media (max-width: 600px) {
-//     .cumulatedInputContainer {
-//       .hideDiv {
-//         display: none;
-//       }
-//       .investmentDateContainer {
-//         justify-content: flex-start;
-//         padding: 25px;
-//         .investmentDateContainerInner {
-//           display: flex;
-//           justify-content: center;
-//           align-items: center;
-//           /* background-color: red; */
-//           .datePickerLabel {
-//             /* margin-bottom: 18px;
-//             font-size: 14px; */
-//           }
-//           .datePickerOpener {
-//             width: 100%;
-//           }
-//         }
-//       }
-
-//       .cumulatedImpactLabelContainer {
-//         justify-content: flex-end;
-//         padding: 25px;
-//         .cumulatedImpactLabelContainerInner {
-//           align-items: flex-end;
-//           text-align: end;
-//           /* background-color: red; */
-//           .cumulatedPercentageLabel {
-//           }
-//           .cumulatedPercentage {
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
 
 export default DataInput;

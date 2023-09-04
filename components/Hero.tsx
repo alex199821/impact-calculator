@@ -1,15 +1,8 @@
 "use client";
 import styled from "styled-components";
 import Image from "next/image";
-import ImpactTypeSwitcher from "./ImpactTypeSwitcher";
-import { CumulatedImpactUpdate, HeroProps } from "../interfaces";
-import { useEffect, useRef, useState } from "react";
-const Hero = ({
-  cumulatedImpactSelected,
-  updateCumulatedImpact,
-  typeSwithcerIsOnTop,
-  handleHeroState,
-}: HeroProps) => {
+import { HeroProps } from "../interfaces";
+const Hero = ({ typeSwithcerIsOnTop }: HeroProps) => {
   return (
     <HeroWrapper
       style={
@@ -33,10 +26,6 @@ const Hero = ({
         sizes="100vw"
         priority
       />
-      {/* <ImpactTypeSwitcher
-        cumulatedImpactSelected={cumulatedImpactSelected}
-        updateCumulatedImpact={updateCumulatedImpact}
-      /> */}
     </HeroWrapper>
   );
 };

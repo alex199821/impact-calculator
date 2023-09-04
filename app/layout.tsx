@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { questrial } from "./fonts";
 import StyledComponentsRegistry from "./registry";
-import Header from "../components/Header";
 import "../styles/globals.css";
 import Image from "next/image";
 interface LayoutProps {
@@ -20,26 +19,28 @@ export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en" className={`${questrial.variable}`}>
       <body>
-        <header></header>
+        <header>
+          <link rel="shortcut icon" href="#" />
+        </header>
         <main>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </main>
-        {/* <footer style={{ display: 'flex', width: "100%", margin: "auto", columnGap: '30px', marginTop: '30px', marginBottom: '30px', paddingLeft: '35px'}}>
+        <footer className="footer">
           <Image
             src={"/icons/globalGoals.svg"}
             alt=""
             width="0"
             height="0"
-            style={{ width: "auto", height: "40px" }}
+            className="footerLogo"
           />
           <Image
             src={"/icons/pri.svg"}
             alt=""
             width="0"
             height="0"
-            style={{ width: "auto", height: "40px" }}
+            className="footerLogo"
           />
-        </footer> */}
+        </footer>
       </body>
     </html>
   );
