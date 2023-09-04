@@ -26,7 +26,7 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     chartGroup,
   } = impactData;
 
-  //Function to animate Accumulated Impact Counter
+  // Animate Accumulated Impact Counter.
   const accumulatedStepNumber = useMotionValue(
     impactCalculator(normalizedEquivalent || 1, investAmount)
   );
@@ -49,7 +49,7 @@ const ImpactCard = ({ impactData, investAmount }: ImpactCardProps) => {
     }
   }, [investAmount]);
 
-  //Function to animate Normalized Impact Counter
+  // Animate Normalized Impact Counter.
   const countStepNumber = useMotionValue(
     impactCalculator(normalizedImpact, investAmount)
   );

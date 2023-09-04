@@ -28,6 +28,8 @@ export default function HomePage() {
   const headerRef = useRef<HTMLInputElement>(null);
   const dataInputRef = useRef<HTMLInputElement>(null);
 
+
+  //Function which checks if Typeswitcher component overlaps with header, and in positive scenario changes state which triggers animation if both components.
   const handleScroll = (): void => {
     if (!headerRef.current || !dataInputRef.current || !setTypeSwithcerIsOnTop)
       return;

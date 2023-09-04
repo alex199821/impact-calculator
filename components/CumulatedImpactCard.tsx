@@ -21,7 +21,7 @@ import {
   ChartOptions,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -69,15 +69,6 @@ const CumulatedImpactCard = ({
       bar: {
         borderWidth: 1.2,
       },
-    },
-    animations: {
-      tension: {
-        duration: 1000,
-        easing: 'linear',
-        from: 1,
-        to: 0,
-        loop: true
-      }
     },
     scales: {
       x: {

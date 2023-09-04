@@ -166,11 +166,20 @@ body {
   width: auto;
 }
 
+@media (max-width: 800px) {
+  .footer {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    padding: 5px 35px;
+    float: left;
+  }
+}
+
 @media (max-width: 600px) {
   .footer {
-    width: 100%;
-    align-items: flex-start;
-    padding: 5px 35px;
+    display: flex;
+    width: fit-content;
     flex-direction: column;
     row-gap: 20px;
   }

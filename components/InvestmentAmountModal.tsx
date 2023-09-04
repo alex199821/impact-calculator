@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { InvestmentModalProps } from "../interfaces";
-import { motion, AnimatePresence,  } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 const InvestmentAmountModal = ({
   investAmount,
   updateInvestAmount,
@@ -15,11 +15,8 @@ const InvestmentAmountModal = ({
   const [modalStartsOpening, setModalStartsOpening] = useState(true);
   const [modalStartsClosing, setModalStartsClosing] = useState(false);
 
-  useEffect(() => {
-    let formattedInvestAmont = investAmount.toLocaleString("en-US");
-    setInputValue(formattedInvestAmont);
-  }, [investAmount]);
 
+  //Function to control value in Invest Amount Input
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = event.target.value;
     const commasRemovedFromNewValue = newValue.replace(/,/g, "");
@@ -32,6 +29,7 @@ const InvestmentAmountModal = ({
     setInputValue(newValueParsed.toLocaleString("en-US"));
   };
 
+  //Function to set new invest amount and close modal
   const recalculateImpact = () => {
     const inputValueWithoutCommas = inputValue.replace(/,/g, "");
     const parsedInputValue = parseInt(inputValueWithoutCommas.replace("$", ""));
@@ -50,6 +48,7 @@ const InvestmentAmountModal = ({
     document.body.style.overflow = "visible";
   };
 
+  //Function to close modal
   const closePopup = () => {
     setModalStartsClosing(true);
     setTimeout(() => {
@@ -58,12 +57,14 @@ const InvestmentAmountModal = ({
     document.body.style.overflow = "visible";
   };
 
+  //state change for triggering animation of orange cover over Investment Input Component.
   useEffect(() => {
     setTimeout(() => {
       setModalStartsOpening(false);
     }, 400);
   }, []);
 
+  //useEffect to remove warning message from Dom after set time
   useEffect(() => {
     if (warningMessage) {
       setTimeout(() => {
@@ -72,6 +73,8 @@ const InvestmentAmountModal = ({
     }
   }, [warningMessage]);
 
+
+  //Functions to control Keyboard Actions and add even listeners
   const keyDownHandler = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       e.preventDefault();
@@ -92,9 +95,6 @@ const InvestmentAmountModal = ({
     };
   }, [inputValue]);
 
-  useEffect(() => {
-    console.log(inputValue);
-  }, [inputValue]);
   return (
     <>
       <motion.div
@@ -350,21 +350,10 @@ const InvestmentAmountModalWrapper = styled.section`
     cursor: pointer;
   }
   @media (max-width: 600px) {
-    .closePopupButton {
-    }
-    .investAmountInputLabel {
-    }
-    .warningMessageContainer {
-      .warningMessage {
-      }
-    }
-
     .investAmountInputContainer {
       display: flex;
       justify-content: center;
 
-      .orangeCoverOverInput {
-      }
       .investAmountInput {
         width: 290px;
         font-size: 54px;
@@ -372,13 +361,6 @@ const InvestmentAmountModalWrapper = styled.section`
     }
     .pressEscLabel {
       display: none;
-    }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-    }
-    .investAmountInput:focus {
-    }
-    .setNewInvestAmountButton {
     }
   }
 `;

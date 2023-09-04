@@ -38,6 +38,7 @@ const ImpactCardList = ({
           const { chartGroup } = impactData;
           return (
             <div className="impactCard" key={index}>
+              {/* for correct 3d effect on changing card both card are put into one div with one being front and other being backside */}
               <motion.div
                 initial={{}}
                 animate={

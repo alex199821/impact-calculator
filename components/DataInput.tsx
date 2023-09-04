@@ -45,8 +45,9 @@ const DataInput = ({
     setDatePickerOpen(true);
   };
 
+  //Animate changing investment number.
   const countStepNumber = useMotionValue(investAmount);
-  const normalizedImpactAnimated = useTransform(countStepNumber, (number) => {
+  const investmentAnimated = useTransform(countStepNumber, (number) => {
     return Math.round(number).toLocaleString("en-US");
   });
   useEffect(() => {
@@ -54,6 +55,8 @@ const DataInput = ({
     return animation.stop;
   }, [investAmount]);
 
+
+  //Animate changing accumulated percentage.
   const cumulationStepNumber = useMotionValue(100);
   const cumulatedPercentage = useTransform(cumulationStepNumber, Math.round);
   useEffect(() => {
@@ -262,7 +265,7 @@ const DataInput = ({
                 duration: 0.1,
               }}
             >
-              $<motion.p>{normalizedImpactAnimated}</motion.p>
+              $<motion.p>{investmentAnimated}</motion.p>
             </motion.button>
           </motion.section>
         )}
