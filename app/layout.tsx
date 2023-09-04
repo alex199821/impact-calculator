@@ -31,14 +31,14 @@ export default function RootLayout({ children }: LayoutProps) {
             alt=""
             width="0"
             height="0"
-            className="footerLogo"
+            className="footerLogoTgg"
           />
           <Image
             src={"/icons/pri.svg"}
             alt=""
             width="0"
             height="0"
-            className="footerLogo"
+            className="footerLogoPri"
           />
         </footer>
       </body>
